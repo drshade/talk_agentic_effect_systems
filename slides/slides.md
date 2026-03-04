@@ -169,6 +169,69 @@ From this signature, an agent knows:
 
 ---
 
+## Appendix: Python `effect` Library
+
+```python
+from effect import Effect, sync_performer, TypeDispatcher
+
+# Effects as data classes (the Ports)
+class FetchUser:
+    def __init__(self, user_id): self.user_id = user_id
+
+class SendEmail:
+    def __init__(self, to, body): self.to, self.body = to, body
+
+# Business logic — yields effects, never touches I/O directly
+def notify_user(user_id, message):
+    user = yield Effect(FetchUser(user_id))
+    yield Effect(SendEmail(user.email, message))
+
+# Performer = interpreter (lives in infrastructure)
+@sync_performer
+def perform_fetch_user(_, intent):
+    return db.session.get(User, intent.user_id)
+```
+
+No compile-time enforcement — but the same **structural discipline**.
+
+---
+
+## Appendix: TypeScript Effect-TS
+
+```typescript
+import { Effect, Context } from "effect"
+
+// Define the service interface (the Port)
+class UserRepo extends Context.Tag("UserRepo")<
+  UserRepo,
+  { fetchUser: (id: string) => Effect.Effect<User> }
+>() {}
+
+class EmailService extends Context.Tag("EmailService")<
+  EmailService,
+  { send: (to: string, body: string) => Effect.Effect<void> }
+>() {}
+
+// Business logic — pure, no I/O
+const notifyUser = (userId: string, message: string) =>
+  Effect.gen(function* () {
+    const repo = yield* UserRepo
+    const email = yield* EmailService
+    const user = yield* repo.fetchUser(userId)
+    yield* email.send(user.email, message)
+  })
+
+// Provide implementations at the boundary
+notifyUser("123", "Hello").pipe(
+  Effect.provideService(UserRepo, { fetchUser: dbFetchUser }),
+  Effect.provideService(EmailService, { send: smtpSend }),
+)
+```
+
+Compile-time enforced. **The closest TypeScript gets to Haskell's guarantees.**
+
+---
+
 ## Structure your effects. Control your agents.
 
 **Resources:**
