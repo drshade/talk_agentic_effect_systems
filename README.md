@@ -2,7 +2,7 @@
 
 > Effect Systems for Agentic Development — 15-minute lightning talk
 
-**[View slides](https://pages.github.com)** ← replace with your Pages URL after first deploy
+**[View slides](https://drshade.github.io/talk_agentic_effect_systems/)**
 
 ## Contents
 
@@ -22,6 +22,3 @@ npm run slides:watch   # live preview at localhost
 npm run slides         # slides/slides.html
 npm run slides:pdf     # slides/slides.pdf
 ```
-
-Slides are automatically deployed to GitHub Pages on push to `main`.
-To enable: **Settings → Pages → Source → GitHub Actions**.
