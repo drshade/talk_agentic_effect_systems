@@ -1,0 +1,12 @@
+{
+  "name": "agentic-effect-systems-talk",
+  "private": true,
+  "scripts": {
+    "slides": "marp slides/slides.md -o slides/slides.html",
+    "slides:pdf": "marp slides/slides.md --pdf -o slides/slides.pdf",
+    "slides:watch": "marp slides/slides.md --watch -o slides/slides.html"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4"
+  }
+}
