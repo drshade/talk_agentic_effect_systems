@@ -2,6 +2,7 @@
   "name": "agentic-effect-systems-talk",
   "private": true,
   "scripts": {
+    "build": "marp slides/slides.md -o dist/index.html",
     "slides": "marp slides/slides.md -o slides/slides.html",
     "slides:pdf": "marp slides/slides.md --pdf -o slides/slides.pdf",
     "slides:watch": "marp slides/slides.md --watch -o slides/slides.html"
