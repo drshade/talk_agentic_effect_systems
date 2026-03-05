@@ -232,19 +232,21 @@ Compile-time enforced. **The closest TypeScript gets to Haskell's guarantees.**
 
 ---
 
-## Further Reading
-
-**Constraining LLMs with types/structure**
-- [ChopChop](https://arxiv.org/abs/2509.00360) — semantically constrain LLM output via coinductive type analysis
-- [HYSYNTH](https://arxiv.org/abs/2405.15880) — context-free LLM approximation for program synthesis
+## Further Reading: Effects
 
 **Effects in other languages**
 - [Koka](https://koka-lang.github.io) — language with row-polymorphic effects built in
 - [OCaml 5 Effects](https://v2.ocaml.org/manual/effects.html) — native delimited continuations
 - [Unison Abilities](https://www.unison-lang.org) — effects as first-class language feature
 
-**Parallel / exotic runtimes**
-- [SupGen / HVM4](https://github.com/HigherOrderCO/HVM) — uses HVM superposition nodes to enumerate all programs in parallel, collapsing to one that satisfies the type signature
+---
+
+## Further Reading: Types, LLMs & Synthesis
+
+**Using types to constrain or guide generation**
+- [ChopChop](https://arxiv.org/abs/2509.00360) — semantically constrain LLM output via coinductive type analysis
+- [HYSYNTH](https://arxiv.org/abs/2405.15880) — context-free LLM approximation for program synthesis
+- [SupGen / HVM4](https://github.com/HigherOrderCO/HVM) — exhaustive parallel program search via superposition nodes, collapsed by type signature
 
 ---
 
