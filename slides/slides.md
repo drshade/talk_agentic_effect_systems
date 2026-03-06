@@ -125,16 +125,16 @@ runMyEffect = interpret $ \_ -> \case
 │  API Handlers                    │
 │  UserService :> es               │
 └───────────────┬──────────────────┘
+                │ Human governs Agent HERE!
                 │ Use Cases Interpreter
                 │ runUserService
-                │ Human governs Agent HERE!
 ┌───────────────▼──────────────────┐
 │  Domain                          │
 │  UserRepo :> es, Email :> es     │
 └───────────────┬──────────────────┘
-                │ Ports Interpreter
-                │ runUserRepo · runEmail (Govern your agent here!)
                 │ Human governs Agent HERE!
+                │ Ports Interpreter
+                │ runUserRepo · runEmail
 ┌───────────────▼──────────────────┐
 │  Infrastructure                  │
 │  DB · email · external APIs      │
