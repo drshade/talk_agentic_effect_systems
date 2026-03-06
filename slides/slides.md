@@ -33,12 +33,56 @@ style: |
 Effects declared **in the type** — not buried in the implementation.
 
 ```haskell
-fetchUser
-  :: (UserRepo :> es, Logging :> es)
-  => UserId -> Eff es User
+fetchUser :: (UserRepo :> es, Logging :> es) => UserId -> Eff es User
 ```
 
-The compiler enforces that `fetchUser` can **only** read from `UserRepo` and write to `Logging`. Nothing more.
+The compiler enforces that `fetchUser` can **only** read from `UserRepo` and write to `Logging`. Nothing else.
+
+---
+
+## Worked example
+
+```haskell
+fetchUser :: (UserRepo :> es, Logging :> es) => UserId -> Eff es User
+fetchUser userid = do
+  log "Fetching user..."
+  user <- lookupUser userid
+  case user of
+    Nothing -> ???? -- compiler won't allow us to fail
+    Just user -> return user
+```
+
+```haskell
+fetchUser :: (UserRepo :> es, Logging :> es, Error String :> es) => UserId -> Eff es User
+fetchUser userid = do
+  log "Fetching user..."
+  user <- lookupUser userid
+  case user of
+    Nothing -> throwError "Unable to find user!" -- better 
+    Just user -> return user
+```
+
+---
+
+## Anatomy of effects
+
+```haskell
+data MyEffect :: Effect where
+  DoSomething :: SomeInput -> MyEffect m SomeOutput
+
+-- eliminating the MyEffect type:
+runMyEffect :: Eff (MyEffect : es) a -> Eff es a
+runMyEffect = interpret $ \_ -> \case
+  DoSomething input -> return ...
+
+-- eliminating AND introducing another effect:
+runMyEffect :: (Logging :> es) => Eff (MyEffect : es) a -> Eff es a
+runMyEffect = interpret $ \_ -> \case
+  DoSomething input -> do
+    log "hello"
+    return ...
+
+```
 
 ---
 
@@ -71,7 +115,6 @@ The compiler enforces that `fetchUser` can **only** read from `UserRepo` and wri
 └──────────────────────────────────┘
 ```
 
-Each layer depends only on the layer below it. **Domain has no knowledge of infrastructure.** *...or does it have 5 layers?*
 
 ---
 
@@ -84,14 +127,14 @@ Each layer depends only on the layer below it. **Domain has no knowledge of infr
 └───────────────┬──────────────────┘
                 │ Use Cases Interpreter
                 │ runUserService
-                │ Handler → Domain mapping
+                │ Human governs Agent HERE!
 ┌───────────────▼──────────────────┐
 │  Domain                          │
 │  UserRepo :> es, Email :> es     │
 └───────────────┬──────────────────┘
                 │ Ports Interpreter
-                │ runUserRepo · runEmail
-                │ Domain → Infrastructure mapping
+                │ runUserRepo · runEmail (Govern your agent here!)
+                │ Human governs Agent HERE!
 ┌───────────────▼──────────────────┐
 │  Infrastructure                  │
 │  DB · email · external APIs      │
