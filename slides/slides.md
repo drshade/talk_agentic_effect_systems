@@ -67,21 +67,23 @@ fetchUser userid = do
 ## Anatomy of effects
 
 ```haskell
+-- design effects declaratively (just data)
 data MyEffect :: Effect where
   DoSomething :: SomeInput -> MyEffect m SomeOutput
 
--- eliminating the MyEffect type:
+-- design how effects are handled (just functions)
+
+-- eliminating the MyEffect type (unwrapping):
 runMyEffect :: Eff (MyEffect : es) a -> Eff es a
 runMyEffect = interpret $ \_ -> \case
   DoSomething input -> return ...
 
--- eliminating AND introducing another effect:
+-- eliminating AND introducing another effect (re-wrapping):
 runMyEffect :: (Logging :> es) => Eff (MyEffect : es) a -> Eff es a
 runMyEffect = interpret $ \_ -> \case
   DoSomething input -> do
     log "hello"
     return ...
-
 ```
 
 ---
@@ -115,6 +117,36 @@ runMyEffect = interpret $ \_ -> \case
 └──────────────────────────────────┘
 ```
 
+---
+
+## Until it isn't...
+
+```
+┌──────────────────────────────────┐
+│  API Handlers                    │  ─────────────────────────────────┐
+│  routing · auth · serialisation  │  ──────────────────────┐          │
+└───────────────┬──────────────────┘                        │          │
+                ↓                                           ↓          │
+┌───────────────▼──────────────────┐            Domain obj  │          │
+│  Use Cases                       │            used direct │          │
+│  workflows · orchestration       │                        │          │
+└───────────────┬──────────────────┘                        │          │
+                ↓                                           ↓          │
+┌───────────────▼──────────────────┐  ◄─────────────────────┘          │
+│  Domain                          │                                   │
+│  entities · business rules       │                                   │
+└───────────────┬──────────────────┘                                   │
+                ↓                                                      │
+┌───────────────▼──────────────────┐   ← Port skipped;                 │
+│  Ports                           │     Infra called direct           │
+│  abstract interfaces · no I/O    │                                   │
+└───────────────┬──────────────────┘                                   │
+                ↓                                                      │
+┌───────────────▼──────────────────┐  ◄────────────────────────────────┘
+│  Infrastructure                  │    API Handler calls DB direct
+│  DB · email · external APIs      │
+└──────────────────────────────────┘
+```
 
 ---
 
@@ -140,8 +172,6 @@ runMyEffect = interpret $ \_ -> \case
 │  DB · email · external APIs      │
 └──────────────────────────────────┘
 ```
-
-3 real layers. 2 interpreter boundaries. Use Cases and Ports were **never layers** — they're the translations between them.
 
 ---
 
@@ -197,7 +227,7 @@ From this signature, an agent knows:
 - What it's allowed to do
 - What would break the type if added
 
-**Your types are a dense, verified spec. They fit in any context window.**
+**Your types are a dense, verified spec. Fit easily in any context window.**
 
 ---
 
@@ -284,16 +314,14 @@ Compile-time enforced. **The closest TypeScript gets to Haskell's guarantees.**
 
 ---
 
-## Further Reading: Types, LLMs & Synthesis
+## Further Reading: Types, LLMs & Program Synthesis
 
-**Using types to constrain or guide generation**
+**Some more exotic ideas**
 - [ChopChop](https://arxiv.org/abs/2509.00360) — semantically constrain LLM output via coinductive type analysis
 - [HYSYNTH](https://arxiv.org/abs/2405.15880) — context-free LLM approximation for program synthesis
 - [SupGen / HVM4](https://github.com/HigherOrderCO/HVM) — exhaustive parallel program search via superposition nodes, collapsed by type signature
 
 ---
-
-## Structure your effects. Control your agents.
 
 **Resources:**
 - Haskell: [hackage.haskell.org/package/effectful](https://hackage.haskell.org/package/effectful)
