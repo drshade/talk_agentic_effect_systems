@@ -1,0 +1,61 @@
+cabal-version:      3.0
+name:               todo-api
+version:            0.1.0.0
+synopsis:           Effectful architecture example: Todo CRUD API
+description:
+  Demonstrates how effect systems enforce layered architecture,
+  making agent-generated code structurally sound by construction.
+
+common shared
+  default-language:   GHC2021
+  default-extensions:
+    ConstraintKinds
+    DataKinds
+    DeriveAnyClass
+    DeriveGeneric
+    DerivingStrategies
+    DuplicateRecordFields
+    GADTs
+    LambdaCase
+    OverloadedRecordDot
+    OverloadedStrings
+    RecordWildCards
+    TemplateHaskell
+    TypeApplications
+    TypeFamilies
+    TypeOperators
+  ghc-options:        -Wall
+
+executable todo-api
+  import:         shared
+  main-is:        Main.hs
+  hs-source-dirs: src
+  other-modules:
+    Application
+    Architecture
+    Api.Handlers
+    Api.Mapping
+    Api.Types
+    Domain.Todo
+    Effects.Clock
+    Effects.Config
+    Effects.IdGen
+    Effects.Logging
+    Effects.TodoRepo
+    Effects.TodoService
+    Interpreters.Clock
+    Interpreters.Config
+    Interpreters.IdGen
+    Interpreters.Logging
+    Interpreters.TodoRepo
+    Interpreters.TodoService
+  build-depends:
+    , base
+    , aeson
+    , bytestring
+    , directory
+    , effectful
+    , effectful-th
+    , text
+    , time
+    , uuid
