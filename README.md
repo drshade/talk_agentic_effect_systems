@@ -3,6 +3,7 @@
 > Effect Systems for Agentic Development — 15-minute lightning talk
 
 **[Watch on YouTube](https://youtu.be/JaLAvoyjwoQ)**
+
 **[View slides](https://drshade.github.io/talk_agentic_effect_systems/)**
 
 ## Contents
