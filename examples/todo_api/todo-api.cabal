@@ -24,18 +24,18 @@ common shared
     TypeApplications
     TypeFamilies
     TypeOperators
-  ghc-options:        -Wall
+  ghc-options:        -Wall -threaded -rtsopts -with-rtsopts=-N
 
 executable todo-api
   import:         shared
-  main-is:        Main.hs
+  main-is:        CLI.hs
   hs-source-dirs: src
   other-modules:
     Application
     Architecture
-    Api.Handlers
-    Api.Mapping
-    Api.Types
+    Entrypoints.Handlers
+    Entrypoints.Mapping
+    Entrypoints.Types
     Domain.Todo
     Effects.Clock
     Effects.Config
@@ -49,6 +49,7 @@ executable todo-api
     Interpreters.Logging
     Interpreters.TodoRepo
     Interpreters.TodoService
+    Server
   build-depends:
     , base
     , aeson
@@ -56,6 +57,9 @@ executable todo-api
     , directory
     , effectful
     , effectful-th
+    , optparse-applicative
+    , servant-server
     , text
     , time
     , uuid
+    , warp

@@ -1,37 +1,40 @@
-module Api.Handlers where
+module Entrypoints.Handlers where
 
-import           Api.Mapping         (parseId, toView)
-import           Api.Types           (TodoView)
-import           Architecture        (ApiEffects)
-
-import           Data.Text           (Text)
+import           Architecture              (EntrypointEffects)
+import           Data.Aeson                (FromJSON)
+import           Data.Text                 (Text)
 import           Effectful
-import           Effects.Logging     (logInfo)
-import           Effects.TodoService (completeTodo, createTodo, getTodo,
-                                      listTodos, removeTodo)
+import           Effects.Logging           (logInfo)
+import           Effects.TodoService       (completeTodo, createTodo, getTodo,
+                                            listTodos, removeTodo)
+import           Entrypoints.Mapping       (parseId, toView)
+import           Entrypoints.Types         (TodoView)
+import           GHC.Generics              (Generic)
 
 -- ── Request type ─────────────────────────────────────────────────────────────
 
 newtype CreateTodoRequest = CreateTodoRequest { title :: Text }
+  deriving (Generic)
+  deriving anyclass (FromJSON)
 
 -- ── Handlers ─────────────────────────────────────────────────────────────────
 
 handleListTodos
-  :: ApiEffects es
+  :: EntrypointEffects es
   => Eff es [TodoView]
 handleListTodos = do
   logInfo "GET /todos"
   fmap toView <$> listTodos
 
 handleCreateTodo
-  :: ApiEffects es
+  :: EntrypointEffects es
   => CreateTodoRequest -> Eff es TodoView
 handleCreateTodo req = do
   logInfo "POST /todos"
   toView <$> createTodo req.title
 
 handleGetTodo
-  :: ApiEffects es
+  :: EntrypointEffects es
   => Text -> Eff es (Maybe TodoView)
 handleGetTodo rawId = do
   logInfo "GET /todos/:id"
@@ -40,7 +43,7 @@ handleGetTodo rawId = do
     Just tid -> fmap toView <$> getTodo tid
 
 handleCompleteTodo
-  :: ApiEffects es
+  :: EntrypointEffects es
   => Text -> Eff es (Maybe TodoView)
 handleCompleteTodo rawId = do
   logInfo "PATCH /todos/:id/complete"
@@ -49,7 +52,7 @@ handleCompleteTodo rawId = do
     Just tid -> fmap toView <$> completeTodo tid
 
 handleDeleteTodo
-  :: ApiEffects es
+  :: EntrypointEffects es
   => Text -> Eff es Bool
 handleDeleteTodo rawId = do
   logInfo "DELETE /todos/:id"

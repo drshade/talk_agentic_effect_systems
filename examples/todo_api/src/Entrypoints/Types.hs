@@ -1,4 +1,4 @@
-module Api.Types
+module Entrypoints.Types
   ( TodoView (..)
   ) where
 

@@ -13,7 +13,7 @@
 --                       introduce others below it. Swap an interpreter to change the
 --                       implementation without touching any other layer.
 --
---   * Everything else — business logic and edge code (API handlers, domain types).
+--   * Everything else — business logic and entrypoint code (handlers, domain types).
 --                       These import from @Effects/@ only — never from @Interpreters/@.
 --                       They describe /what/ to do, not /how/.
 --
@@ -21,7 +21,7 @@
 --
 -- @
 -- ┌─────────────────────────────────────────────────────────────────┐
--- │  API Layer                (constraint: ApiEffects)              │
+-- │  Entrypoint Layer      (constraint: EntrypointEffects)          │
 -- └──────────────────────────────┬──────────────────────────────────┘
 --                                │  interpreter boundary
 -- ┌──────────────────────────────▼──────────────────────────────────┐
@@ -39,7 +39,7 @@
 --   Use it as the constraint on every function belonging to that layer:
 --
 -- @
---   myHandler :: ApiEffects es => Request -> Eff es Response
+--   myHandler :: EntrypointEffects es => Input -> Eff es Output
 -- @
 --
 --   Inside that function, @es@ is abstract — the compiler only knows what
@@ -55,7 +55,7 @@
 --   4. Add the corresponding @run*@ call to @runApp@ in @Application.hs@.
 --   5. Add the effect to whichever constraint synonym(s) below need it.
 module Architecture
-  ( ApiEffects
+  ( EntrypointEffects
   , DomainEffects
   , InfraEffects
   ) where
@@ -68,11 +68,11 @@ import           Effects.Logging     (Logging)
 import           Effects.TodoRepo    (TodoRepo)
 import           Effects.TodoService (TodoService)
 
--- | Permission set for the __API layer__.
+-- | Permission set for the __Entrypoint layer__.
 --   Functions at this layer orchestrate high-level operations and produce
 --   wire-friendly responses. They cannot perform I\/O or access lower-level
 --   concerns directly — the types listed here are the only tools available.
-type ApiEffects es =
+type EntrypointEffects es =
   ( TodoService :> es
   , Logging     :> es
   )

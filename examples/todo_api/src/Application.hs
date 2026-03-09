@@ -5,7 +5,7 @@
 module Application
   ( -- * Full effect stack
     -- | The concrete list of all effects in the application, outermost first.
-    --   Handlers receive this stack and see only what ApiEffects permits.
+    --   Handlers receive this stack and see only what EntrypointEffects permits.
     AppStack
     -- * Application runner
   , runApp
