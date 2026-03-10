@@ -1,6 +1,6 @@
 -- | Concrete application wiring: the full effect stack and the top-level runner.
 --
---   See "Architecture" for the layer diagram, constraint synonyms, and the
+--   See 'Architecture' for the layer diagram, constraint synonyms, and the
 --   checklist for adding a new effect.
 module Application
   ( -- * Full effect stack
@@ -38,8 +38,8 @@ type AppStack =
    ]
 
 -- | Wire the full interpreter stack.
---   Each line is a layer boundary: an interpreter that eliminates
---   one layer's effects and introduces the effects below.
+--   Each interpreter eliminates one effect from the stack.
+--   Outer interpreters provide the effects that inner ones require.
 runApp :: FilePath -> Eff AppStack a -> IO a
 runApp dbPath =
     runEff

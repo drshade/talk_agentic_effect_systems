@@ -23,11 +23,13 @@
 -- ┌─────────────────────────────────────────────────────────────────┐
 -- │  Entrypoint Layer      (constraint: EntrypointEffects)          │
 -- └──────────────────────────────┬──────────────────────────────────┘
---                                │  interpreter boundary
+--                          interpreter eliminates layer above,
+--                          requires effects of layer below
 -- ┌──────────────────────────────▼──────────────────────────────────┐
 -- │  Domain Layer             (constraint: DomainEffects)           │
 -- └──────────────────────────────┬──────────────────────────────────┘
---                                │  interpreter boundary
+--                          interpreter eliminates layer above,
+--                          requires effects of layer below
 -- ┌──────────────────────────────▼──────────────────────────────────┐
 -- │  Infrastructure Layer     (constraint: InfraEffects)            │
 -- └─────────────────────────────────────────────────────────────────┘

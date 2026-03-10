@@ -29,7 +29,7 @@ runTodoRepo = interpret $ \_ -> \case
 
   GetById tid -> do
     stored <- getDbPath >>= readDb
-    pure $ find (\t -> t.key == tid) =<< mapM toDomain stored
+    pure $ find (\t -> t.key == tid) (mapMaybe toDomain stored)
 
   Insert todo -> do
     path   <- getDbPath

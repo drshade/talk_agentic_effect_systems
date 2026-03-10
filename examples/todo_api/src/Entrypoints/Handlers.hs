@@ -1,4 +1,11 @@
-module Entrypoints.Handlers where
+module Entrypoints.Handlers
+  ( CreateTodoRequest (..)
+  , handleListTodos
+  , handleCreateTodo
+  , handleGetTodo
+  , handleCompleteTodo
+  , handleDeleteTodo
+  ) where
 
 import           Architecture              (EntrypointEffects)
 import           Data.Aeson                (FromJSON)

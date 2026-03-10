@@ -13,9 +13,9 @@ import           Effects.TodoRepo           (deleteById, getAll, getById,
                                              insert, update)
 import           Effects.TodoService        (TodoService (..))
 
--- | The interpreter boundary between API and Domain.
---   Eliminates TodoService; introduces TodoRepo, Clock, IdGen.
---   Above this boundary: no TodoRepo, no Clock, no IdGen.
+-- | Eliminates TodoService from the effect stack.
+--   Requires TodoRepo, Clock, IdGen, and Logging to already be present below —
+--   those effects are provided by the outer interpreters in 'Application.runApp'.
 runTodoService
   :: DomainEffects es
   => Eff (TodoService : es) a -> Eff es a
